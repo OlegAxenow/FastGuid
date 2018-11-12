@@ -9,11 +9,11 @@ We actively used GUID on my work.
 We recently discussed with @force-net that ```System.Guid``` has too many fields,
 which can adversely affect the performance of some methods.
 
-So, I create struct with two ```ulong``` fields with only basic methods and run several benchmarks.
+So, I created a struct with two ```ulong``` fields with only basic methods and run several benchmarks.
 
 ## Specific details
 
-1. To avoid collisions, I decide to make ```Uuid``` struct instead of ```Guid``` struct with different namespace.
+1. To avoid collisions, I decide to use ```Uuid``` name for struct instead of ```Guid``` name.
 2. Some methods use ```MethodImplOptions.AggressiveInlining``` because relatively small.
 3. Some methods use ```_second``` field first. This is because "sequential" identifiers can be used in some projects.
 
