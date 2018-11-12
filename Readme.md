@@ -13,7 +13,7 @@ So, I create struct with two ```ulong``` fields with only basic methods and run 
 
 ## Specific details
 
-1. To avoid collisions, I decide to make ```Uuid``` struct.
+1. To avoid collisions, I decide to make ```Uuid``` struct instead of ```Guid``` struct with different namespace.
 2. Some methods use ```MethodImplOptions.AggressiveInlining``` because relatively small.
 3. Some methods use ```_second``` field first. This is because "sequential" identifiers can be used in some projects.
 
@@ -34,9 +34,12 @@ Frequency=3312790 Hz, Resolution=301.8604 ns, Timer=TSC
   DefaultJob : .NET Core 2.1.1 (CoreCLR 4.6.26606.02, CoreFX 4.6.26606.05), 64bit RyuJIT
 ```
 
-### CompareTo
+Notes:
 
-I use two benchmarks for each struct to see the difference between comparing the same and different identifiers.
+* I use two benchmarks for each struct to see the difference between comparing the same and different identifiers.
+* "Guid" means calling original ```System.Guid``` methods, "Uuid" -- ```FastGuid.Uuid``` methods.
+
+### CompareTo
 
 |               Method |      Mean |     Error |    StdDev |       Min |       Max | Ratio | RatioSD |
 |--------------------- |----------:|----------:|----------:|----------:|----------:|------:|--------:|
@@ -46,8 +49,6 @@ I use two benchmarks for each struct to see the difference between comparing the
 |      UuidSameCompare |  3.429 ns | 0.0096 ns | 0.0080 ns |  3.417 ns |  3.443 ns |  0.61 |    0.00 |
 
 ### Equals
-
-I use two benchmarks for each struct to see the difference between comparing the same and different identifiers.
 
 |              Method |     Mean |     Error |    StdDev |      Min |      Max | Ratio |
 |-------------------- |---------:|----------:|----------:|---------:|---------:|------:|
