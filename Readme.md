@@ -1,6 +1,7 @@
 ## FastGuid
 
-To make ```System.Guid``` faster. Prototype stage.
+To make ```System.Guid``` faster.
+
 Project at the prototype stage. I hope in the end I will issue a pull request and it will be accepted.
 
 ## Story
