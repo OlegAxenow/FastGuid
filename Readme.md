@@ -37,7 +37,7 @@ Frequency=3312790 Hz, Resolution=301.8604 ns, Timer=TSC
 Notes:
 
 * I use two benchmarks for each struct to see the difference between comparing the same and different identifiers.
-* "Guid" means calling original ```System.Guid``` methods, "Uuid" -- ```FastGuid.Uuid``` methods.
+* "Guid" means calling original ```System.Guid``` methods, "Uuid" — ```FastGuid.Uuid``` methods.
 
 ### CompareTo
 
@@ -63,7 +63,7 @@ Notes:
 * Implement and test other methods.
 * Add unit-tests.
 * Discuss this with .NET Core team on GitHub.
-* Issue a pull request if it makes sense ot refine and release this project as third-party library.
+* Issue a pull request if it makes sense or refine and release this project as third-party library.
 
 ## Requirements and dependencies
 
