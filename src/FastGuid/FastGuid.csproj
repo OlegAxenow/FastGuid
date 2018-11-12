@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <LangVersion>7.3</LangVersion>
+        <Configurations>Debug;Release;Unix</Configurations>
+        <Platforms>AnyCPU</Platforms>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DefineConstants>TRACE;RELEASE;WINDOWS;NETCOREAPP;NETCOREAPP2_1</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Unix' ">
+      <DefineConstants>TRACE;UNIX;RELEASE;NETCOREAPP;NETCOREAPP2_1;UNIX;NETCOREAPP;NETCOREAPP2_1</DefineConstants>
+      <Optimize>true</Optimize>
+    </PropertyGroup>
+
+</Project>

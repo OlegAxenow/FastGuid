@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastGuid", "src\FastGuid\FastGuid.csproj", "{EE4D8585-3BDE-444D-B305-1C4B68B7A89C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "Benchmarks\Benchmarks.csproj", "{5FA09DC7-8D7C-4AE4-AA90-CB4A44AE3940}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		Unix|Any CPU = Unix|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE4D8585-3BDE-444D-B305-1C4B68B7A89C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE4D8585-3BDE-444D-B305-1C4B68B7A89C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE4D8585-3BDE-444D-B305-1C4B68B7A89C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE4D8585-3BDE-444D-B305-1C4B68B7A89C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE4D8585-3BDE-444D-B305-1C4B68B7A89C}.Unix|Any CPU.ActiveCfg = Unix|Any CPU
+		{EE4D8585-3BDE-444D-B305-1C4B68B7A89C}.Unix|Any CPU.Build.0 = Unix|Any CPU
+		{5FA09DC7-8D7C-4AE4-AA90-CB4A44AE3940}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FA09DC7-8D7C-4AE4-AA90-CB4A44AE3940}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FA09DC7-8D7C-4AE4-AA90-CB4A44AE3940}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FA09DC7-8D7C-4AE4-AA90-CB4A44AE3940}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FA09DC7-8D7C-4AE4-AA90-CB4A44AE3940}.Unix|Any CPU.ActiveCfg = Unix|Any CPU
+		{5FA09DC7-8D7C-4AE4-AA90-CB4A44AE3940}.Unix|Any CPU.Build.0 = Unix|Any CPU
+	EndGlobalSection
+EndGlobal

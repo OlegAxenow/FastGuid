@@ -1,0 +1,10 @@
+bin
+obj
+*.cache
+**/.vs
+*.log
+*.trx
+.idea
+StyleCop.Cache
+TestResult.xml
+BenchmarkDotNet.Artifacts

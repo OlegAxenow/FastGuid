@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <Configurations>Debug;Release;Unix</Configurations>
+        <Platforms>AnyCPU</Platforms>
+        <AssemblyName>Benchmarks</AssemblyName>
+        <RootNamespace>Benchmarks</RootNamespace>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BenchmarkDotNet" Version="0.11.2" />
+        <PackageReference Include="CommandLineParser" Version="2.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\src\FastGuid\FastGuid.csproj" />
+    </ItemGroup>
+</Project>
