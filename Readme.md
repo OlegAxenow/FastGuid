@@ -6,7 +6,7 @@ Project at the prototype stage. I hope in the end I will issue a pull request an
 
 ## Story
 
-We actively used GUID on my work.
+We actively used GUID at work.
 We recently discussed with @force-net that ```System.Guid``` has too many fields,
 which can adversely affect the performance of some methods.
 

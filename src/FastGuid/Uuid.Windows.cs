@@ -1,7 +1,6 @@
-#if WINDOWS || DEBUG
+#if WINDOWS
 using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace FastGuid
 {
@@ -10,7 +9,7 @@ namespace FastGuid
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Uuid NewUuid()
 		{
-			int hr = CoCreateGuid(out var result);
+			int hr = Interop.CoCreateGuid(out var result);
 
 			// CoCreateGuid should not return an error, throw just to be on the safe side
 			if (hr != 0)
@@ -26,9 +25,6 @@ namespace FastGuid
 				HResult = hResult;
 			}
 		}
-
-		[DllImport("ole32.dll")]
-		private static extern int CoCreateGuid(out Uuid uuid);
 	}
 }
 #endif

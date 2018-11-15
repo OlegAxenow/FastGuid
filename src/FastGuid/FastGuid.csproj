@@ -12,12 +12,16 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <DefineConstants>TRACE;RELEASE;WINDOWS;NETCOREAPP;NETCOREAPP2_1</DefineConstants>
+      <DefineConstants>WINDOWS;TRACE;RELEASE;NETCOREAPP;NETCOREAPP2_1</DefineConstants>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Unix' ">
-      <DefineConstants>TRACE;UNIX;RELEASE;NETCOREAPP;NETCOREAPP2_1;UNIX;NETCOREAPP;NETCOREAPP2_1</DefineConstants>
+      <DefineConstants>UNIX;TRACE;RELEASE;NETCOREAPP;NETCOREAPP2_1</DefineConstants>
       <Optimize>true</Optimize>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DefineConstants>WINDOWS;TRACE;DEBUG;NETCOREAPP;NETCOREAPP2_1</DefineConstants>
     </PropertyGroup>
 
 </Project>

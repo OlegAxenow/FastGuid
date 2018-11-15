@@ -4,14 +4,13 @@ using System.Runtime.InteropServices;
 
 namespace FastGuid
 {
-
 	partial struct Uuid
 	{
 		// "System.Native"
 		public static unsafe Uuid NewUuid()
 		{
 			Uuid result;
-			GetRandomBytes((byte*)&result, sizeof(Guid));
+			Interop.GetRandomBytes((byte*)&result, sizeof(Guid));
 
 			// ReSharper disable InconsistentNaming
 			const ushort VersionMask = 0xF000;
@@ -21,6 +20,7 @@ namespace FastGuid
 			const byte ClockSeqHiAndReservedValue = 0x80;
 			// ReSharper restore InconsistentNaming
 
+			// TODO: run benchmarks compare with ExplicitLayout on Uuid (so no UuidMap will be needed)
 			// Modify bits indicating the type of the GUID
 			var map = (UuidMap*)&result;
 
@@ -33,17 +33,6 @@ namespace FastGuid
 			}
 
 			return result;
-		}
-
-		private static unsafe void GetRandomBytes(byte* buffer, int length)
-		{
-			Sys.GetNonCryptographicallySecureRandomBytes(buffer, length);
-		}
-
-		private unsafe class Sys
-		{
-			[DllImport("System.Native", EntryPoint = "SystemNative_GetNonCryptographicallySecureRandomBytes")]
-			internal static extern void GetNonCryptographicallySecureRandomBytes(byte* buffer, int length);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
