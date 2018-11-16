@@ -1,7 +1,7 @@
 #if UNIX
 using System;
-using System.Runtime.InteropServices;
 
+// ReSharper disable once CheckNamespace
 namespace FastGuid
 {
 	partial struct Uuid
@@ -20,28 +20,17 @@ namespace FastGuid
 			const byte ClockSeqHiAndReservedValue = 0x80;
 			// ReSharper restore InconsistentNaming
 
-			// TODO: run benchmarks compare with ExplicitLayout on Uuid (so no UuidMap will be needed)
 			// Modify bits indicating the type of the GUID
-			var map = (UuidMap*)&result;
 
 			unchecked
 			{
 				// time_hi_and_version
-				map->_c = (short)((map->_c & ~VersionMask) | RandomGuidVersion);
+				result._c = (short)((result._c & ~VersionMask) | RandomGuidVersion);
 				// clock_seq_hi_and_reserved
-				map->_d = (byte)((map->_d & ~ClockSeqHiAndReservedMask) | ClockSeqHiAndReservedValue);
+				result._d = (byte)((result._d & ~ClockSeqHiAndReservedMask) | ClockSeqHiAndReservedValue);
 			}
 
 			return result;
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		private struct UuidMap
-		{
-			public int _a;
-			public short _b;
-			public short _c;
-			public byte _d;
 		}
 	}
 }

@@ -6,52 +6,49 @@ using System.Runtime.InteropServices;
 namespace FastGuid
 {
 	[Serializable]
-	// [StructLayout(LayoutKind.Explicit, Pack = 1)]
-	[StructLayout(LayoutKind.Sequential)]
-	[DebuggerDisplay("{" + nameof(_first8Bytes) + "}-{" + nameof(_second8Bytes) + "}")]
+	[StructLayout(LayoutKind.Explicit, Pack = 1)]
+	[DebuggerDisplay("{" + nameof(ToString) + "()}")]
 	public partial struct Uuid : IComparable, IComparable<Uuid>, IEquatable<Uuid>
 	{
 		public static readonly Uuid Empty;
 
-		// [FieldOffset(0)]
+		[FieldOffset(0), NonSerialized]
 		private ulong _first8Bytes;
-		// [FieldOffset(8)]
+		[FieldOffset(8), NonSerialized]
 		private ulong _second8Bytes;
 
-		// [FieldOffset(0)] private int _firstInt;
-
-		public unsafe Uuid(Guid guid)
+		public unsafe Uuid(byte[] bytes)
 		{
-			/*fixed (Uuid* pThis = &this)
+			if (bytes.Length != 16)
+				throw new ArgumentException($"Uuid constructor accepts only 16 bytes, but was {bytes.Length}", nameof(bytes));
+			fixed (byte* p = bytes)
 			{
-				// This skips the C# definite assignment rule that all fields of the struct must be assigned before the constructor exits.
-			}*/
-			// TODO: compare performance with "this = *(Uuid*)&guid;" again; try to use Span<T>.CopyTo or ref Guid?
-			// this = *(Uuid*)&guid;
-			var pointer = (ulong*)&guid;
-			// _firstInt = 0;
-			_first8Bytes = pointer[0];
-			_second8Bytes = pointer[1];
+				this = *(Uuid*)p;
+			}
 		}
 
-		public Uuid(ulong first8Bytes, ulong second8Bytes)
+		public Uuid(ReadOnlySpan<byte> bytes) : this()
 		{
-			_first8Bytes = first8Bytes;
-			_second8Bytes = second8Bytes;
-		}
+			if (bytes.Length != 16)
+				throw new ArgumentException($"Uuid constructor accepts only 16 bytes, but was {bytes.Length}", nameof(bytes));
+			// TODO: try to use something else like in ctor with byte[] arg
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static unsafe implicit operator Uuid(Guid guid)
-		{
-			// return *(Uuid*)&guid;
-			var pointer = (ulong*)&guid;
-			return new Uuid(pointer[0], pointer[1]);
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static unsafe implicit operator Guid(Uuid uuid)
-		{
-			return *(Guid*)&uuid;
+			_byte00 = bytes[0];
+			_byte01 = bytes[1];
+			_byte02 = bytes[2];
+			_byte03 = bytes[3];
+			_byte04 = bytes[4];
+			_byte05 = bytes[5];
+			_byte06 = bytes[6];
+			_byte07 = bytes[7];
+			_byte08 = bytes[8];
+			_byte09 = bytes[9];
+			_byte10 = bytes[10];
+			_byte11 = bytes[11];
+			_byte12 = bytes[12];
+			_byte13 = bytes[13];
+			_byte14 = bytes[14];
+			_byte15 = bytes[15];
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

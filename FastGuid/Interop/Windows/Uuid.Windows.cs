@@ -2,6 +2,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
+// ReSharper disable once CheckNamespace
 namespace FastGuid
 {
 	partial struct Uuid

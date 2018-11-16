@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastGuid", "src\FastGuid\FastGuid.csproj", "{EE4D8585-3BDE-444D-B305-1C4B68B7A89C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastGuid", "FastGuid\FastGuid.csproj", "{EE4D8585-3BDE-444D-B305-1C4B68B7A89C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "Benchmarks\Benchmarks.csproj", "{5FA09DC7-8D7C-4AE4-AA90-CB4A44AE3940}"
 EndProject
@@ -8,6 +8,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{433AF14E-B
 ProjectSection(SolutionItems) = preProject
 	Readme.md = Readme.md
 EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastGuid.Tests", "FastGuid.Tests\FastGuid.Tests.csproj", "{26389949-2063-40ED-BD24-8CF45344097B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,5 +30,11 @@ Global
 		{5FA09DC7-8D7C-4AE4-AA90-CB4A44AE3940}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5FA09DC7-8D7C-4AE4-AA90-CB4A44AE3940}.Unix|Any CPU.ActiveCfg = Unix|Any CPU
 		{5FA09DC7-8D7C-4AE4-AA90-CB4A44AE3940}.Unix|Any CPU.Build.0 = Unix|Any CPU
+		{26389949-2063-40ED-BD24-8CF45344097B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26389949-2063-40ED-BD24-8CF45344097B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26389949-2063-40ED-BD24-8CF45344097B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26389949-2063-40ED-BD24-8CF45344097B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26389949-2063-40ED-BD24-8CF45344097B}.Unix|Any CPU.ActiveCfg = Unix|Any CPU
+		{26389949-2063-40ED-BD24-8CF45344097B}.Unix|Any CPU.Build.0 = Unix|Any CPU
 	EndGlobalSection
 EndGlobal

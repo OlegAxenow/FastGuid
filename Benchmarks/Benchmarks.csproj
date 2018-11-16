@@ -31,6 +31,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\src\FastGuid\FastGuid.csproj" />
+      <ProjectReference Include="..\FastGuid\FastGuid.csproj" />
     </ItemGroup>
 </Project>

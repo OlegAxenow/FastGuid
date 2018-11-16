@@ -16,7 +16,8 @@ namespace Benchmarks
 			typeof(EqualsBenchmark), typeof(EqualsObjectBenchmark), typeof(EqualsHalfObjectBenchmark),
 			typeof(GetHashCodeBenchmark), typeof(NewIdBenchmark),
 			typeof(DictionarySearchBenchmark), typeof(DictionaryInsertBenchmark),
-			typeof(ConversionBenchmark)
+			typeof(BytesConversionBenchmark), typeof(GuidConversionBenchmark),
+			typeof(ToStringBenchmark)
 		};
 
 		private static readonly Dictionary<string, Type> BenchmarkDictionary;
@@ -29,9 +30,11 @@ namespace Benchmarks
 		static void Main(string[] args)
 		{
 #if DEBUG
+			CustomConfig.BenchmarkType = BenchmarkType.Default;
+			CustomConfig.ShowMemory = false;
 			var bench = new DictionaryInsertBenchmark
 			{
-				MatchCount = 10, TotalCount = 100
+				TotalCount = 100
 			};
 			bench.Setup();
 			bench.InsertUuid();
