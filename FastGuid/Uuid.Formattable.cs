@@ -13,7 +13,7 @@ namespace FastGuid
 	// Bytes are in a different order than you might expect
 	// For: 35 91 8b c9 - 19 6d - 40 ea  - 97 79  - 88 9d 79 b7 53 f0
 	// Get: C9 8B 91 35   6D 19   EA 40    97 79    88 9D 79 B7 53 F0
-	// Ix:   0  1  2  3    4  5    6  7     8  9    10 11 12 13 14 15
+	// Idx:  0  1  2  3    4  5    6  7     8  9    10 11 12 13 14 15
 	public partial struct Uuid : IFormattable
 	{
 		private const int DigitsOnlyCharCount = 32;

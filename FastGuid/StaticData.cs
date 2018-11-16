@@ -5,7 +5,8 @@ namespace FastGuid
 	/// <summary>
 	/// Static data and constants for string conversion.
 	/// </summary>
-	public static class StaticData
+	/// <remarks> Internal because <see cref="HexDwords"/> can be corrupted from external code and give unpredictable results.</remarks>
+	internal static class StaticData
 	{
 		public const char Comma = ',';
 
