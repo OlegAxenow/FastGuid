@@ -11,6 +11,7 @@ We recently discussed with @force-net that ```System.Guid``` has too many fields
 which can adversely affect the performance of some methods.
 
 So, I created a struct with two ```ulong``` fields with only basic methods and run several benchmarks.
+I liked the results and I decided to continue optimizations...
 
 ## Specific details
 
