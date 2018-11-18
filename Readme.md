@@ -40,26 +40,26 @@ Notes:
 
 * "Guid" prefix used for original ```System.Guid``` methods, "Uuid" — for ```FastGuid.Uuid``` methods.
 * For ```CompareTo``` and ```Equals``` two benchmarks used for each struct to see the difference between comparing the same and different identifiers.
-* For ```CompareTo``` and ```Equals``` appropriate methods called twice like ```_guid1.CompareTo(_guid2) ^ _guid2.CompareTo(_guid1)```, because single call too fast.
+* For ```CompareTo``` and ```Equals``` appropriate methods called thrice like ```_guid1.CompareTo(_guid2) ^ _guid2.CompareTo(_guid3) ^ _guid3.CompareTo(_guid1)```.
 * For ```ToString``` last letter means one of the [standard guid formats](https://docs.microsoft.com/en-us/dotnet/api/system.guid.tostring?view=netcore-2.1) — D, B, N or X.
 
 ### CompareTo
 
-|               Method |      Mean |     Error |    StdDev |       Min |       Max | Ratio | RatioSD |
-|--------------------- |----------:|----------:|----------:|----------:|----------:|------:|--------:|
-| GuidDifferentCompare |  5.598 ns | 0.0326 ns | 0.0305 ns |  5.567 ns |  5.657 ns |  1.00 |    0.00 |
-|      GuidSameCompare | 16.125 ns | 0.0353 ns | 0.0331 ns | 16.080 ns | 16.194 ns |  2.88 |    0.02 |
-| UuidDifferentCompare |  1.883 ns | 0.0068 ns | 0.0064 ns |  1.873 ns |  1.896 ns |  0.34 |    0.00 |
-|      UuidSameCompare |  3.429 ns | 0.0096 ns | 0.0080 ns |  3.417 ns |  3.443 ns |  0.61 |    0.00 |
+|               Method |      Mean |     Error |    StdDev |       Min |       Max | Ratio |
+|--------------------- |----------:|----------:|----------:|----------:|----------:|------:|
+| GuidDifferentCompare |  8.019 ns | 0.0194 ns | 0.0162 ns |  8.001 ns |  8.063 ns |  1.00 |
+|      GuidSameCompare | 24.242 ns | 0.0817 ns | 0.0764 ns | 24.102 ns | 24.335 ns |  3.02 |
+| UuidDifferentCompare |  3.862 ns | 0.0056 ns | 0.0053 ns |  3.855 ns |  3.870 ns |  0.48 |
+|      UuidSameCompare | 13.991 ns | 0.0711 ns | 0.0665 ns | 13.903 ns | 14.110 ns |  1.75 |
 
 ### Equals
 
 |              Method |     Mean |     Error |    StdDev |      Min |      Max | Ratio |
 |-------------------- |---------:|----------:|----------:|---------:|---------:|------:|
-| GuidDifferentEquals | 3.760 ns | 0.0172 ns | 0.0153 ns | 3.740 ns | 3.786 ns |  1.00 |
-|      GuidSameEquals | 6.624 ns | 0.0119 ns | 0.0100 ns | 6.610 ns | 6.643 ns |  1.76 |
-| UuidDifferentEquals | 1.095 ns | 0.0147 ns | 0.0123 ns | 1.078 ns | 1.110 ns |  0.29 |
-|      UuidSameEquals | 1.352 ns | 0.0039 ns | 0.0033 ns | 1.345 ns | 1.357 ns |  0.36 |
+| GuidDifferentEquals | 5.866 ns | 0.0185 ns | 0.0173 ns | 5.833 ns | 5.891 ns |  1.00 |
+|      GuidSameEquals | 7.537 ns | 0.0067 ns | 0.0059 ns | 7.525 ns | 7.549 ns |  1.29 |
+| UuidDifferentEquals | 2.387 ns | 0.0080 ns | 0.0067 ns | 2.378 ns | 2.401 ns |  0.41 |
+|      UuidSameEquals | 4.034 ns | 0.0138 ns | 0.0129 ns | 4.000 ns | 4.051 ns |  0.69 |
 
 ### ToString
 

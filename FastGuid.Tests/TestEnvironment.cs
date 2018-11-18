@@ -28,19 +28,51 @@ namespace FastGuid.Tests
 		}
 
 		/// <summary>
-		/// Iterates <paramref name="iterationDelegate"/> for all <see cref="OriginalGuids"/> and <see cref="EquivalentUuids"/> pairs.
+		/// Iterates <paramref name="pairDelegate"/> for all <see cref="OriginalGuids"/> and <see cref="EquivalentUuids"/> pairs.
 		/// </summary>
-		public static void Iterate(AssertIteration iterationDelegate)
+		public static void Iterate(AssertPair pairDelegate)
 		{
-			if (iterationDelegate == null)
-				throw new ArgumentNullException(nameof(iterationDelegate));
+			if (pairDelegate == null)
+				throw new ArgumentNullException(nameof(pairDelegate));
 
 			for (int i = 0; i < IterationCount; i++)
 			{
-				iterationDelegate(OriginalGuids[i], EquivalentUuids[i]);
+				pairDelegate(OriginalGuids[i], EquivalentUuids[i]);
 			}
 		}
 
-		public delegate void AssertIteration(Guid originalGuid, Uuid equivalentUuid);
+		/// <summary>
+		/// Iterates <paramref name="twoPairsDelegate"/> for all nearest pairs from <see cref="OriginalGuids"/> and <see cref="EquivalentUuids"/>.
+		/// </summary>
+		public static void IterateTwoPairs(AssertTwoPairs twoPairsDelegate)
+		{
+			if (twoPairsDelegate == null)
+				throw new ArgumentNullException(nameof(twoPairsDelegate));
+
+			for (int i = 0; i < IterationCount - 1; i++)
+			{
+				twoPairsDelegate(new Pair(OriginalGuids[i], EquivalentUuids[i]),
+					new Pair(OriginalGuids[i + 1], EquivalentUuids[i + 1]));
+
+				twoPairsDelegate(new Pair(OriginalGuids[i + 1], EquivalentUuids[i + 1]),
+					new Pair(OriginalGuids[i], EquivalentUuids[i]));
+			}
+		}
+
+		public delegate void AssertPair(Guid originalGuid, Uuid equivalentUuid);
+
+		public delegate void AssertTwoPairs(Pair pair1, Pair pair2);
+
+		public struct Pair
+		{
+			public Pair(Guid guid, Uuid uuid)
+			{
+				Guid = guid;
+				Uuid = uuid;
+			}
+
+			public Guid Guid;
+			public Uuid Uuid;
+		}
 	}
 }

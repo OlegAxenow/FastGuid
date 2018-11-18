@@ -17,6 +17,11 @@ namespace FastGuid
 		[FieldOffset(8), NonSerialized]
 		private ulong _second8Bytes;
 
+		// fields for comparison
+		[FieldOffset(0), NonSerialized] private uint _aUnsigned;
+		[FieldOffset(4), NonSerialized] private ushort _bUnsignded;
+		[FieldOffset(6), NonSerialized] private ushort _cUnsigned;
+
 		public unsafe Uuid(byte[] bytes)
 		{
 			if (bytes.Length != 16)
@@ -69,15 +74,51 @@ namespace FastGuid
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public int CompareTo(Uuid other)
 		{
-			if (_first8Bytes < other._first8Bytes)
+			if (_aUnsigned < other._aUnsigned)
 				return -1;
 
-			if (_first8Bytes > other._first8Bytes)
+			if (_aUnsigned > other._aUnsigned)
 				return 1;
 
-			if (other._second8Bytes != _second8Bytes)
-				return _second8Bytes < other._second8Bytes ? -1 : 1;
+			if (_bUnsignded < other._bUnsignded)
+				return -1;
 
+			if (_bUnsignded > other._bUnsignded)
+				return 1;
+
+			if (_cUnsigned < other._cUnsigned)
+				return -1;
+
+			if (_cUnsigned > other._cUnsigned)
+				return 1;
+
+			if (other._second8Bytes == _second8Bytes)
+				return 0;
+
+			return CompareToLast8Bytes(ref other);
+		}
+
+		private int CompareToLast8Bytes(ref Uuid other)
+		{
+			// TODO: fix bug (different byte orders) and rerun benchmarks
+			if (_d != other._d)
+				return _d < other._d ? -1 : 1;
+			if (_e != other._e)
+				return _e < other._e ? -1 : 1;
+			if (_f != other._f)
+				return _f < other._f ? -1 : 1;
+			if (_g != other._g)
+				return _g < other._g ? -1 : 1;
+
+			if (_h != other._h)
+				return _h < other._h ? -1 : 1;
+			if (_i != other._i)
+				return _i < other._i ? -1 : 1;
+			if (_j != other._j)
+				return _j < other._j ? -1 : 1;
+			if (_k != other._k)
+				return _k < other._k ? -1 : 1;
+			Debug.Assert(false, "should not be here because of 'if (other._second8Bytes == _second8Bytes) return 0;'");
 			return 0;
 		}
 
@@ -90,16 +131,28 @@ namespace FastGuid
 
 			var other = (Uuid)value;
 
-			if (_first8Bytes < other._first8Bytes)
+			if (_aUnsigned < other._aUnsigned)
 				return -1;
 
-			if (_first8Bytes > other._first8Bytes)
+			if (_aUnsigned > other._aUnsigned)
 				return 1;
 
-			if (other._second8Bytes != _second8Bytes)
-				return _second8Bytes < other._second8Bytes ? -1 : 1;
+			if (_bUnsignded < other._bUnsignded)
+				return -1;
 
-			return 0;
+			if (_bUnsignded > other._bUnsignded)
+				return 1;
+
+			if (_cUnsigned < other._cUnsigned)
+				return -1;
+
+			if (_cUnsigned > other._cUnsigned)
+				return 1;
+
+			if (other._second8Bytes == _second8Bytes)
+				return 0;
+
+			return CompareToLast8Bytes(ref other);
 		}
 
 		public override int GetHashCode()
