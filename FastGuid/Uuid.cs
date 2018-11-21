@@ -100,7 +100,6 @@ namespace FastGuid
 
 		private int CompareToLast8Bytes(ref Uuid other)
 		{
-			// TODO: fix bug (different byte orders) and rerun benchmarks
 			if (_d != other._d)
 				return _d < other._d ? -1 : 1;
 			if (_e != other._e)

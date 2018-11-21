@@ -17,7 +17,7 @@ namespace Benchmarks
 			typeof(GetHashCodeBenchmark), typeof(NewIdBenchmark),
 			typeof(DictionarySearchBenchmark), typeof(DictionaryInsertBenchmark),
 			typeof(BytesConversionBenchmark), typeof(GuidConversionBenchmark),
-			typeof(ToStringBenchmark)
+			typeof(ToStringBenchmark), typeof(TryParseExactBenchmark)
 		};
 
 		private static readonly Dictionary<string, Type> BenchmarkDictionary;

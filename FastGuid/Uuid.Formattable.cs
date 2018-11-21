@@ -21,26 +21,26 @@ namespace FastGuid
 		private const int BracesCharCount = DefaultCharCount + 2;
 		private const int NestedCharCount = 68;
 
-		[FieldOffset(0), NonSerialized] private readonly byte _byte00;
-		[FieldOffset(1), NonSerialized] private readonly byte _byte01;
-		[FieldOffset(2), NonSerialized] private readonly byte _byte02;
-		[FieldOffset(3), NonSerialized] private readonly byte _byte03;
+		[FieldOffset(0), NonSerialized] private byte _byte00;
+		[FieldOffset(1), NonSerialized] private byte _byte01;
+		[FieldOffset(2), NonSerialized] private byte _byte02;
+		[FieldOffset(3), NonSerialized] private byte _byte03;
 
-		[FieldOffset(4), NonSerialized] private readonly byte _byte04;
-		[FieldOffset(5), NonSerialized] private readonly byte _byte05;
+		[FieldOffset(4), NonSerialized] private byte _byte04;
+		[FieldOffset(5), NonSerialized] private byte _byte05;
 
-		[FieldOffset(6), NonSerialized] private readonly byte _byte06;
-		[FieldOffset(7), NonSerialized] private readonly byte _byte07;
+		[FieldOffset(6), NonSerialized] private byte _byte06;
+		[FieldOffset(7), NonSerialized] private byte _byte07;
 
-		[FieldOffset(8), NonSerialized] private readonly byte _byte08;
-		[FieldOffset(9), NonSerialized] private readonly byte _byte09;
+		[FieldOffset(8), NonSerialized] private byte _byte08;
+		[FieldOffset(9), NonSerialized] private byte _byte09;
 
-		[FieldOffset(10), NonSerialized] private readonly byte _byte10;
-		[FieldOffset(11), NonSerialized] private readonly byte _byte11;
-		[FieldOffset(12), NonSerialized] private readonly byte _byte12;
-		[FieldOffset(13), NonSerialized] private readonly byte _byte13;
-		[FieldOffset(14), NonSerialized] private readonly byte _byte14;
-		[FieldOffset(15), NonSerialized] private readonly byte _byte15;
+		[FieldOffset(10), NonSerialized] private byte _byte10;
+		[FieldOffset(11), NonSerialized] private byte _byte11;
+		[FieldOffset(12), NonSerialized] private byte _byte12;
+		[FieldOffset(13), NonSerialized] private byte _byte13;
+		[FieldOffset(14), NonSerialized] private byte _byte14;
+		[FieldOffset(15), NonSerialized] private byte _byte15;
 
 		public override string ToString()
 		{
@@ -99,24 +99,27 @@ namespace FastGuid
 
 					fixed (uint* hexDwords = StaticData.HexDwords)
 					{
-						buffer[8] = '-';
-						buffer[13] = '-';
-						buffer[18] = '-';
-						buffer[23] = '-';
-
 						dwordBuffer[3] = hexDwords[_byte00];
 						dwordBuffer[2] = hexDwords[_byte01];
 						dwordBuffer[1] = hexDwords[_byte02];
 						dwordBuffer[0] = hexDwords[_byte03];
 
+						buffer[8] = '-';
+
 						dwordBufferFrom9[1] = hexDwords[_byte04];
 						dwordBufferFrom9[0] = hexDwords[_byte05];
+
+						buffer[13] = '-';
 
 						dwordBuffer[8] = hexDwords[_byte06];
 						dwordBuffer[7] = hexDwords[_byte07];
 
+						buffer[18] = '-';
+
 						dwordBufferFrom9[5] = hexDwords[_byte08];
 						dwordBufferFrom9[6] = hexDwords[_byte09];
+
+						buffer[23] = '-';
 
 						dwordBuffer[12] = hexDwords[_byte10];
 						dwordBuffer[13] = hexDwords[_byte11];
@@ -150,16 +153,16 @@ namespace FastGuid
 						dwordBuffer[2] = hexDwords[_byte01];
 						dwordBuffer[1] = hexDwords[_byte02];
 						dwordBuffer[0] = hexDwords[_byte03];
-
+						// -
 						dwordBuffer[5] = hexDwords[_byte04];
 						dwordBuffer[4] = hexDwords[_byte05];
-
+						// -
 						dwordBuffer[7] = hexDwords[_byte06];
 						dwordBuffer[6] = hexDwords[_byte07];
-
+						// -
 						dwordBuffer[8] = hexDwords[_byte08];
 						dwordBuffer[9] = hexDwords[_byte09];
-
+						// -
 						dwordBuffer[10] = hexDwords[_byte10];
 						dwordBuffer[11] = hexDwords[_byte11];
 						dwordBuffer[12] = hexDwords[_byte12];
@@ -194,25 +197,28 @@ namespace FastGuid
 					fixed (uint* hexDwords = StaticData.HexDwords)
 					{
 						buffer[0] = leftBrace;
-						buffer[9] = '-';
-						buffer[14] = '-';
-						buffer[19] = '-';
-						buffer[24] = '-';
-						buffer[37] = rightBrace;
 
 						dwordBufferFrom1[3] = hexDwords[_byte00];
 						dwordBufferFrom1[2] = hexDwords[_byte01];
 						dwordBufferFrom1[1] = hexDwords[_byte02];
 						dwordBufferFrom1[0] = hexDwords[_byte03];
 
+						buffer[9] = '-';
+
 						dwordBufferFrom10[1] = hexDwords[_byte04];
 						dwordBufferFrom10[0] = hexDwords[_byte05];
+
+						buffer[14] = '-';
 
 						dwordBufferFrom1[8] = hexDwords[_byte06];
 						dwordBufferFrom1[7] = hexDwords[_byte07];
 
+						buffer[19] = '-';
+
 						dwordBufferFrom10[5] = hexDwords[_byte08];
 						dwordBufferFrom10[6] = hexDwords[_byte09];
+
+						buffer[24] = '-';
 
 						dwordBufferFrom1[12] = hexDwords[_byte10];
 						dwordBufferFrom1[13] = hexDwords[_byte11];
@@ -220,6 +226,8 @@ namespace FastGuid
 						dwordBufferFrom1[15] = hexDwords[_byte13];
 						dwordBufferFrom1[16] = hexDwords[_byte14];
 						dwordBufferFrom1[17] = hexDwords[_byte15];
+
+						buffer[37] = rightBrace;
 					}
 
 					return result;

@@ -35,6 +35,56 @@ namespace FastGuid.Tests
 			Console.WriteLine(builder.ToString());
 		}
 
+		[Test, Explicit("Manual generation of Low4BitFromHex")]
+		public void Generate_BitsFromHex()
+		{
+			// arrange
+			var bits = new ushort[256];
+
+			for (int i = 0; i < bits.Length; i++)
+			{
+				bits[i] = 256;
+			}
+
+			for (ushort i = 0; i < HexTuplesForParsing.Length; i++)
+			{
+				var tuple = HexTuplesForParsing[i];
+				bits[tuple.Item1] = i;
+				bits[tuple.Item2] = i;
+			}
+
+			var builder = new StringBuilder(3000);
+			builder.Append("{");
+			// act
+			for (int i = 0; i < bits.Length; i++)
+			{
+				if (i % 8 == 0)
+					builder.AppendLine();
+				else
+					builder.Append(" ");
+
+				if (bits[i] == 256)
+				{
+					builder.Append("(Bits)").Append(bits[i]);
+				}
+				else
+				{
+					builder.Append("new Bits(").Append(bits[i]).Append(")");
+				}
+
+				builder.Append(",");
+			}
+
+			builder.AppendLine().Append("};");
+			Console.WriteLine(builder.ToString());
+		}
+
+		private static readonly ValueTuple<char, char>[] HexTuplesForParsing =
+		{
+			('0', '0'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8'), ('9', '9'),
+			('A', 'a'), ('B', 'b'), ('C', 'c'), ('D', 'd'), ('E', 'e'), ('F', 'f')
+		};
+
 		private static readonly ValueTuple<char, char>[] HexTuples =
 		{
 			('0', '0'), ('0', '1'), ('0', '2'), ('0', '3'), ('0', '4'), ('0', '5'), ('0', '6'), ('0', '7'), ('0', '8'), ('0', '9'),
