@@ -7,6 +7,28 @@ namespace FastGuid.Tests
 	public class ParsingSpec
 	{
 		[Test]
+		public void TryParseExact_difference_for_not_strict_format()
+		{
+			// arrange
+			var guidStrings = new []
+			{
+				"00000000-0x00-0x12-0000-000000000000",
+				"00000000-0x00-+123-0000-000000000000",
+			};
+
+			foreach (var guidString in guidStrings)
+			{
+				// act
+				var guidResult = Guid.TryParseExact(guidString, "D", out _);
+				var uuidResult = Uuid.TryParseExact(guidString, "D", out _);
+
+				// assert
+				Assert.That(guidResult, Is.True);
+				Assert.That(uuidResult, Is.False);
+			}
+		}
+
+		[Test]
 		public void Default_TryParseExact_results_should_be_the_same_for_Guid_and_Uuid()
 		{
 			TestEnvironment.Iterate((guid, uuid) =>
