@@ -74,6 +74,19 @@ Notes:
 | UuidToStringN | 24.01 ns | 0.0446 ns | 0.0396 ns | 23.96 ns | 24.11 ns |  0.41 |
 | UuidToStringX | 33.82 ns | 0.1509 ns | 0.1411 ns | 33.56 ns | 34.04 ns |  0.57 |
 
+### TryParseExact
+
+|             Method |      Mean |     Error |    StdDev |    Median |       Min |       Max | Ratio |
+|------------------- |----------:|----------:|----------:|----------:|----------:|----------:|------:|
+| GuidTryParseExactD | 295.73 ns | 0.5214 ns | 0.6207 ns | 295.67 ns | 294.35 ns | 297.03 ns |  1.00 |
+| GuidTryParseExactB | 293.97 ns | 1.0966 ns | 1.3468 ns | 294.20 ns | 288.35 ns | 295.10 ns |  0.99 |
+| GuidTryParseExactN | 417.32 ns | 0.4367 ns | 0.5522 ns | 417.35 ns | 416.38 ns | 418.63 ns |  1.41 |
+| GuidTryParseExactX | 697.23 ns | 1.3468 ns | 1.6540 ns | 697.81 ns | 693.32 ns | 699.37 ns |  2.36 |
+| UuidTryParseExactD |  39.67 ns | 0.3329 ns | 0.4444 ns |  39.42 ns |  39.30 ns |  40.74 ns |  0.13 |
+| UuidTryParseExactB |  40.94 ns | 0.2564 ns | 0.3423 ns |  41.07 ns |  40.10 ns |  41.15 ns |  0.14 |
+| UuidTryParseExactN |  39.86 ns | 0.1022 ns | 0.1217 ns |  39.81 ns |  39.73 ns |  40.19 ns |  0.13 |
+| UuidTryParseExactX |  44.96 ns | 0.1092 ns | 0.1458 ns |  45.01 ns |  44.69 ns |  45.13 ns |  0.15 |
+
 ## Roadmap
 
 * Implement and test other methods.
