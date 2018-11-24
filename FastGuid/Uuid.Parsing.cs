@@ -5,7 +5,7 @@ namespace FastGuid
 {
 	// Performance notes:
 	// 1. No access to internal "string.GetRawStringData()" so just use "fixed (char* buffer = result)".
-	// 2. TODO: write other notes
+	// 2. Pre-generated Bits.High faster than multiplying by 16 in runtime.
 	//
 	// Logic notes:
 	// Bytes are in a different order than you might expect

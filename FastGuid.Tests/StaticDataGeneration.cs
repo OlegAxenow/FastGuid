@@ -35,7 +35,7 @@ namespace FastGuid.Tests
 			Console.WriteLine(builder.ToString());
 		}
 
-		[Test, Explicit("Manual generation of Low4BitFromHex")]
+		[Test, Explicit("Manual generation of BitsFromHex")]
 		public void Generate_BitsFromHex()
 		{
 			// arrange
