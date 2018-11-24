@@ -13,6 +13,7 @@ namespace FastGuid.Tests
 			var guidStrings = new []
 			{
 				"00000000-0x00-0x12-0000-000000000000",
+				"00000000-0x00-0X12-0000-000000000000",
 				"00000000-0x00-+123-0000-000000000000",
 			};
 
@@ -24,6 +25,28 @@ namespace FastGuid.Tests
 
 				// assert
 				Assert.That(guidResult, Is.True);
+				Assert.That(uuidResult, Is.False);
+			}
+		}
+
+		[Test]
+		public void TryParseExact_false_for_0X()
+		{
+			// arrange
+			var guidStrings = new []
+			{
+				"{0X418272ed,0x6d32,0x4775,{0x96,0x57,0x55,0xd7,0x73,0x9f,0xd6,0xf6}}",
+				"{0X418272ed,0X6d32,0X4775,{0X96,0X57,0X55,0Xd7,0X73,0X9f,0Xd6,0Xf6}}",
+			};
+
+			foreach (var guidString in guidStrings)
+			{
+				// act
+				var guidResult = Guid.TryParseExact(guidString, "D", out _);
+				var uuidResult = Uuid.TryParseExact(guidString, "D", out _);
+
+				// assert
+				Assert.That(guidResult, Is.False);
 				Assert.That(uuidResult, Is.False);
 			}
 		}
