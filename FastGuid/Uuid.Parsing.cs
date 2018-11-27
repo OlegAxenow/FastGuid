@@ -8,13 +8,11 @@ namespace FastGuid
 	// 2. Pre-generated Bits.High faster than multiplying by 16 in runtime.
 	//
 	// Logic notes:
-	// Bytes are in a different order than you might expect
-	// For: 35 91 8b c9 - 19 6d - 40 ea  - 97 79  - 88 9d 79 b7 53 f0
-	// Get: C9 8B 91 35   6D 19   EA 40    97 79    88 9D 79 B7 53 F0
-	// Idx:  0  1  2  3    4  5    6  7     8  9    10 11 12 13 14 15
+	// If you create guid with array of 16 byte 00,01...15 (according to indexes),
+	// to make correct guid you should use reverse byte order for first three parts:
+	// 03020100-0504-0706-0809-101112131415
 	public partial struct Uuid
 	{
-
 		public static bool TryParseExact(string input, string format, out Uuid result)
 		{
 			if (input == null)
@@ -191,8 +189,8 @@ namespace FastGuid
 				// started from 1th char because of braces and commas
 				uint* dwordBufferFrom1 = (uint*)(buffer + 1);
 
-				// First part of string and indexes for 418272ed-6d32-4775-9657-55d7739fd6f6:
-				//  {  0  x  4  1  8  2  7  2  e  d  ,  0  x  6  d  3  2  ,  0  x  4  7  7  5  ,  {  0  x  9  6  ,
+				// First part of string and indexes for 03020100-0504-0706-0809-101112131415:
+				//  {  0  x  0  3  0  2  0  1  0  0  ,  0  x  0  5  0  4  ,  0  x  0  7  0  6  ,  {  0  x  0  8  ,
 				// 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
 				if (buffer[0] != StaticData.LeftBrace || buffer[26] != StaticData.LeftBrace ||
 				    buffer[66] != StaticData.RightBrace || buffer[67] != StaticData.RightBrace ||
@@ -222,8 +220,8 @@ namespace FastGuid
 					if (!TryParseHex(pBits, buffer[23], buffer[24], ref result._byte06)) return false;
 					if (!TryParseHex(pBits, buffer[29], buffer[30], ref result._byte08)) return false;
 
-					// Second part of string and indexes for 418272ed-6d32-4775-9657-55d7739fd6f6:
-					//  0  x  5  7  ,  0  x  5  5  ,  0  x  d  7  ,  0  x  7  3  ,  0  x  9  f  ,  0  x  d  6  ,  0  x  f  6  }  }
+					// Second part of string and indexes for 03020100-0504-0706-0809-101112131415:
+					//  0  x  0  9  ,  0  x  1  0  ,  0  x  1  1  ,  0  x  1  2  ,  0  x  1  3  ,  0  x  1  4  ,  0  x  1  5  }  }
 					// 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67
 					if (!TryParseHex(pBits, buffer[34], buffer[35], ref result._byte09)) return false;
 					if (!TryParseHex(pBits, buffer[39], buffer[40], ref result._byte10)) return false;
