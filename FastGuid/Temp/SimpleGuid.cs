@@ -7,6 +7,11 @@ namespace FastGuid.Temp
 	[StructLayout(LayoutKind.Sequential)]
 	public struct SimpleGuid : IEquatable<SimpleGuid>
 	{
+		private const int DigitsOnlyCharCount = 32;
+		private const int DefaultCharCount = DigitsOnlyCharCount + 4;
+		private const int BracesCharCount = DefaultCharCount + 2;
+		private const int NestedCharCount = 68;
+
 		// ReSharper disable FieldCanBeMadeReadOnly.Local
 		private int _a; // Do not rename (binary serialization)
 		private short _b; // Do not rename (binary serialization)
@@ -27,7 +32,7 @@ namespace FastGuid.Temp
 			this = span[0];
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		// [MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public bool Equals(SimpleGuid other)
 		{
 			/*StructForEquals thisStruct = new StructForEquals(ref this);
@@ -41,6 +46,13 @@ namespace FastGuid.Temp
 			var spanThis = MemoryMarshal.Cast<SimpleGuid, StructForEquals>(MemoryMarshal.CreateReadOnlySpan(ref this, 1));
 			var spanOther = MemoryMarshal.Cast<SimpleGuid, StructForEquals>(MemoryMarshal.CreateReadOnlySpan(ref other, 1));
 			return spanThis[0]._second8Bytes == spanOther[0]._second8Bytes && spanThis[0]._first8Bytes == spanOther[0]._first8Bytes;
+		}
+
+		public override string ToString()
+		{
+			// TODO: implement faster version
+			var span = MemoryMarshal.Cast<SimpleGuid, Guid>(MemoryMarshal.CreateReadOnlySpan(ref this, 1));
+			return span[0].ToString();
 		}
 
 		[StructLayout(LayoutKind.Explicit, Pack = 1)]
@@ -57,6 +69,121 @@ namespace FastGuid.Temp
 			public StructForEquals(ref SimpleGuid simpleGuid) : this()
 			{
 				_simpleGuid = simpleGuid;
+			}
+		}
+
+		public static bool TryParseExact(string input, string format, out SimpleGuid result)
+		{
+			if (input == null)
+			{
+				result = default;
+				return false;
+			}
+
+			if (format == null || format.Length == 0)
+				return TryParseDefault(input, out result);
+
+			// all acceptable format strings are of length 1
+			if (format.Length != 1)
+			{
+				throw new ArgumentException(
+					$"Format length should be 1, but was {format.Length}.", nameof(format));
+			}
+
+			switch (format[0])
+			{
+				case 'D':
+				case 'd':
+					return TryParseDefault(input, out result);
+				/*case 'N':
+				case 'n':
+					return TryParseDigitsOnly(input, out result);
+				case 'B':
+				case 'b':
+					return TryParseWithBraces(input, out result);
+				case 'P':
+				case 'p':
+					return TryParseWithBraces(input, out result, '(', ')');
+				case 'X':
+				case 'x':
+					return TryParseNested(input, out result);*/
+				default:
+					throw new ArgumentOutOfRangeException(nameof(format));
+			}
+		}
+
+		private static unsafe bool TryParseDefault(string input, out SimpleGuid result)
+		{
+			result = new SimpleGuid();
+			if (input.Length != DefaultCharCount)
+			{
+				return false;
+			}
+
+			fixed (char* buffer = input)
+			{
+				if (buffer[8] != '-' || buffer[13] != '-' || buffer[18] != '-' || buffer[23] != '-')
+					return false;
+
+				fixed (Bits* pBits = StaticData.BitsFromHex)
+				{
+					byte* bytes = stackalloc byte[4];
+
+					// TODO: compare performance with BitConverter.ToInt32() and see Guid code
+					// TODO: may be struct can be made or static method depending on BitConverter.IsLittleEndian to speed up converting to int
+					// TODO: implement for chars 0-17 and checking for strange formats in first digit (when false)
+					if (!TryParseHex(pBits, buffer[0], buffer[1], ref bytes[3])) return false;
+					if (!TryParseHex(pBits, buffer[2], buffer[3], ref bytes[2])) return false;
+					if (!TryParseHex(pBits, buffer[4], buffer[5], ref bytes[1])) return false;
+					if (!TryParseHex(pBits, buffer[6], buffer[7], ref bytes[0])) return false;
+
+					// TODO: make faster (may be 4 byte variables instead of array?)
+					// TODO: check Unsafe.ReadUnaligned<T> and Unsafe.WriteUnaligned<T> (or MemoryMarshal.As) for real Guid
+
+					result._a = BitConverter.ToInt32(new ReadOnlySpan<byte>(bytes, 4));
+
+					// - 8
+					if (!TryParseHex(pBits, buffer[9], buffer[10], ref bytes[3])) return false;
+					if (!TryParseHex(pBits, buffer[11], buffer[12], ref bytes[2])) return false;
+					// - 13
+					if (!TryParseHex(pBits, buffer[14], buffer[15], ref bytes[1])) return false;
+					if (!TryParseHex(pBits, buffer[16], buffer[17], ref bytes[0])) return false;
+					var span = new ReadOnlySpan<byte>(bytes, 4);
+					result._b = BitConverter.ToInt16(span.Slice(2, 2));
+					result._c = BitConverter.ToInt16(span.Slice(0, 2));
+					// - 18
+					if (!TryParseHex(pBits, buffer[19], buffer[20], ref result._d)) return false;
+					if (!TryParseHex(pBits, buffer[21], buffer[22], ref result._e)) return false;
+					// - 23
+					if (!TryParseHex(pBits, buffer[24], buffer[25], ref result._f)) return false;
+					if (!TryParseHex(pBits, buffer[26], buffer[27], ref result._g)) return false;
+					if (!TryParseHex(pBits, buffer[28], buffer[29], ref result._h)) return false;
+					if (!TryParseHex(pBits, buffer[30], buffer[31], ref result._i)) return false;
+					if (!TryParseHex(pBits, buffer[32], buffer[33], ref result._j)) return false;
+					if (!TryParseHex(pBits, buffer[34], buffer[35], ref result._k)) return false;
+				}
+
+				return true;
+			}
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static unsafe bool TryParseHex(Bits* pBits, int a, int b, ref byte result)
+		{
+			unchecked
+			{
+				// TODO: try to decrease StaticData.BitsFromHex length and use lesser constant instead of 256
+				if ((a | b) > 256) return false;
+
+				a = pBits[a].High;
+				b = pBits[b].Low;
+
+				int value = a + b;
+				// TODO: try to replace for > 255 and == 255 && ... to use two bytes instead of two ushorts in Bits
+				if (value >= 256) return false;
+
+				result = (byte)value;
+				return true;
 			}
 		}
 	}

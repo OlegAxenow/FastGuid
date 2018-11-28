@@ -1,4 +1,5 @@
 ﻿using System;
+using FastGuid.Temp;
 using NUnit.Framework;
 
 namespace FastGuid.Tests
@@ -62,11 +63,15 @@ namespace FastGuid.Tests
 				// act
 				var guidResult = Guid.TryParseExact(guidString, "D", out var parsedGuid);
 				var uuidResult = Uuid.TryParseExact(guidString, "D", out var parsedUuid);
+				var simpleGuidResult = SimpleGuid.TryParseExact(guidString, "D", out var parsedSimpleGuid);
 
 				// assert
 				Assert.That(uuidResult, Is.EqualTo(guidResult));
+				Assert.That(simpleGuidResult, Is.EqualTo(guidResult));
 				Assert.That(parsedUuid, Is.EqualTo(uuid));
 				Assert.That(parsedUuid.ToString(), Is.EqualTo(parsedGuid.ToString()));
+
+				Assert.That(parsedSimpleGuid.ToString(), Is.EqualTo(parsedGuid.ToString()));
 			});
 		}
 

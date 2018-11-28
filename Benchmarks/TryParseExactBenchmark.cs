@@ -1,6 +1,7 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
 using FastGuid;
+using FastGuid.Temp;
 
 namespace Benchmarks
 {
@@ -30,7 +31,7 @@ namespace Benchmarks
 			return Guid.TryParseExact(_stringD, "D", out _);
 		}
 
-		[Benchmark]
+		/*[Benchmark]
 		public bool GuidTryParseExactB()
 		{
 			return Guid.TryParseExact(_stringB, "B", out _);
@@ -46,7 +47,7 @@ namespace Benchmarks
 		public bool GuidTryParseExactX()
 		{
 			return Guid.TryParseExact(_stringX, "X", out _);
-		}
+		}*/
 
 		[Benchmark]
 		public bool UuidTryParseExactD()
@@ -54,7 +55,7 @@ namespace Benchmarks
 			return Uuid.TryParseExact(_stringD, "D", out _);
 		}
 
-		[Benchmark]
+		/*[Benchmark]
 		public bool UuidTryParseExactB()
 		{
 			return Uuid.TryParseExact(_stringB, "B", out _);
@@ -70,6 +71,12 @@ namespace Benchmarks
 		public bool UuidTryParseExactX()
 		{
 			return Uuid.TryParseExact(_stringX, "X", out _);
+		}*/
+
+		[Benchmark]
+		public bool SimpleGuidTryParseExactD()
+		{
+			return SimpleGuid.TryParseExact(_stringD, "D", out _);
 		}
 	}
 }
