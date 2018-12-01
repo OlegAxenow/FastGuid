@@ -53,7 +53,7 @@ namespace FastGuid.Tests
 		}
 
 		[Test]
-		public void Default_TryParseExact_results_should_be_the_same_for_Guid_and_Uuid()
+		public void Default_TryParseExact_results_should_be_the_same_for_Guid_Uuid_and_SimpleGuid()
 		{
 			TestEnvironment.Iterate((guid, uuid) =>
 			{
@@ -87,15 +87,19 @@ namespace FastGuid.Tests
 				// act + assert
 				var guidResult1 = Guid.TryParseExact(guidString1, "D", out _);
 				var uuidResult1 = Uuid.TryParseExact(guidString1, "D", out _);
+				var simpleGuidResult1 = SimpleGuid.TryParseExact(guidString1, "D", out _);
 				Assert.That(uuidResult1, Is.EqualTo(guidResult1));
+				Assert.That(simpleGuidResult1, Is.EqualTo(guidResult1));
 
 				AssertWithReplacement(guidString, "D");
 			});
 
 			var guidResult3 = Guid.TryParseExact(string.Empty, "D", out _);
 			var uuidResult3 = Uuid.TryParseExact(string.Empty, "D", out _);
+			var simpleGuidResult3 = SimpleGuid.TryParseExact(string.Empty, "D", out _);
 
 			Assert.That(uuidResult3, Is.EqualTo(guidResult3));
+			Assert.That(simpleGuidResult3, Is.EqualTo(guidResult3));
 		}
 
 		[Test]
@@ -227,15 +231,23 @@ namespace FastGuid.Tests
 
 		private static void AssertWithReplacement(string guidString, string format)
 		{
-			for (int i = 0; i < guidString.Length; i++)
+			char[] invalidChars = { '!', 'Z', Char.MaxValue };
+
+			foreach (var invalidChar in invalidChars)
 			{
-				var guidString2 = guidString.Substring(0, i) + "!" + guidString.Substring(i, guidString.Length - i - 1);
+				for (int i = 0; i < guidString.Length; i++)
+				{
+					var guidString2 = guidString.Substring(0, i) + invalidChar + guidString.Substring(i, guidString.Length - i - 1);
 
-				var guidResult2 = Guid.TryParseExact(guidString2, format, out _);
-				var uuidResult2 = Uuid.TryParseExact(guidString2, format, out _);
+					var guidResult2 = Guid.TryParseExact(guidString2, format, out _);
+					var uuidResult2 = Uuid.TryParseExact(guidString2, format, out _);
+					var simpleGuidResult2 = SimpleGuid.TryParseExact(guidString2, format, out _);
 
-				Assert.That(uuidResult2, Is.EqualTo(guidResult2));
+					Assert.That(uuidResult2, Is.EqualTo(guidResult2));
+					Assert.That(simpleGuidResult2, Is.EqualTo(guidResult2));
+				}
 			}
+
 		}
 	}
 }

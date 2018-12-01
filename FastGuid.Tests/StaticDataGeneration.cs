@@ -7,6 +7,12 @@ namespace FastGuid.Tests
 	[TestFixture]
 	public class StaticDataGeneration
 	{
+		/// <summary>
+		/// Length of the "StaticData.BitsFromHex" to compare while parsing.
+		/// Not 256 to allocate less memory for "StaticData.BitsFromHex".
+		/// </summary>
+		private const int BitsFromHexLength = 104;
+
 		[Test, Explicit("Manual generation of HexDwords")]
 		public void Generate_HexDwords()
 		{
@@ -39,11 +45,11 @@ namespace FastGuid.Tests
 		public void Generate_BitsFromHex()
 		{
 			// arrange
-			var bits = new ushort[256];
+			var bits = new ushort[BitsFromHexLength];
 
 			for (int i = 0; i < bits.Length; i++)
 			{
-				bits[i] = 256;
+				bits[i] = 255;
 			}
 
 			for (ushort i = 0; i < HexTuplesForParsing.Length; i++)
@@ -63,7 +69,7 @@ namespace FastGuid.Tests
 				else
 					builder.Append(" ");
 
-				if (bits[i] == 256)
+				if (bits[i] == 255)
 				{
 					builder.Append("(Bits)").Append(bits[i]);
 				}

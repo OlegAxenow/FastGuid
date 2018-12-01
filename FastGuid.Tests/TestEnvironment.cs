@@ -20,7 +20,10 @@ namespace FastGuid.Tests
 			OriginalGuids[0] = Guid.Empty;
 			EquivalentUuids[0] = Uuid.Empty;
 
-			for (int i = 1; i < OriginalGuids.Length; i++)
+			OriginalGuids[1] = Guid.ParseExact("FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF", "D");
+			EquivalentUuids[1] = new Uuid(OriginalGuids[1]);
+
+			for (int i = 2; i < OriginalGuids.Length ; i++)
 			{
 				OriginalGuids[i] = Guid.NewGuid();
 				EquivalentUuids[i] = (Uuid)OriginalGuids[i];

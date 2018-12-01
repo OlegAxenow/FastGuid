@@ -170,17 +170,29 @@ namespace FastGuid.Temp
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static unsafe bool TryParseHex(Bits* pBits, int a, int b, ref byte result)
 		{
+			const int maxLowBits = 15;
+			const int maxHighBits = 15 << 4;
 			unchecked
 			{
-				// TODO: try to decrease StaticData.BitsFromHex length and use lesser constant instead of 256
-				if ((a | b) > 256) return false;
+				if (a >= StaticData.BitsFromHexLength || b >= StaticData.BitsFromHexLength)
+					return false;
 
 				a = pBits[a].High;
 				b = pBits[b].Low;
 
 				int value = a + b;
-				// TODO: try to replace for > 255 and == 255 && ... to use two bytes instead of two ushorts in Bits
-				if (value >= 256) return false;
+
+				// for 255 we need to distinguish Bits overflow (from 255 + 0) and normal 255 value (from 240 + 15)
+				if (value >= byte.MaxValue)
+				{
+					if (value == byte.MaxValue && a == maxHighBits && b == maxLowBits)
+					{
+						result = byte.MaxValue;
+						return true;
+					}
+
+					return false;
+				}
 
 				result = (byte)value;
 				return true;

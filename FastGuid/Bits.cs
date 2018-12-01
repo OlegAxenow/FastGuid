@@ -6,18 +6,18 @@ namespace FastGuid
 	/// <remarks> <see cref="ushort"/> used because of overflow checking.</remarks>
 	internal struct Bits
 	{
-		public ushort High;
-		public ushort Low;
+		public byte High;
+		public byte Low;
 
-		public Bits(ushort low)
+		public Bits(byte low)
 		{
-			High = (ushort)(low * 16);
+			High = (byte)(low << 4);
 			Low = low;
 		}
 
-		public static explicit operator Bits(int value)
+		public static explicit operator Bits(byte value)
 		{
-			return new Bits { High = (ushort)value, Low = (ushort)value};
+			return new Bits { High = value, Low = value};
 		}
 	}
 }
