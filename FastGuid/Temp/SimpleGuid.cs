@@ -132,7 +132,7 @@ namespace FastGuid.Temp
 
 					if (!TryParseHexStrict(pBits, buffer[0], buffer[1], ref bytes[3]))
 					{
-						if (!TryParseNotStrictHex(buffer, 0, pBits, ref bytes[3], ref bytes[2]))
+						if (!TryParseHexNotStrict(buffer, 0, pBits, ref bytes[3], ref bytes[2]))
 							return false;
 					}
 					else
@@ -152,7 +152,7 @@ namespace FastGuid.Temp
 					// - 8
 					if (!TryParseHexStrict(pBits, buffer[9], buffer[10], ref bytes[3]))
 					{
-						if (!TryParseNotStrictHex(buffer, 9, pBits, ref bytes[3], ref bytes[2]))
+						if (!TryParseHexNotStrict(buffer, 9, pBits, ref bytes[3], ref bytes[2]))
 							return false;
 					}
 					else
@@ -164,7 +164,7 @@ namespace FastGuid.Temp
 					// - 13
 					if (!TryParseHexStrict(pBits, buffer[14], buffer[15], ref bytes[1]))
 					{
-						if (!TryParseNotStrictHex(buffer, 14, pBits, ref bytes[1], ref bytes[0]))
+						if (!TryParseHexNotStrict(buffer, 14, pBits, ref bytes[1], ref bytes[0]))
 							return false;
 					}
 					else
@@ -179,7 +179,7 @@ namespace FastGuid.Temp
 					// - 18
 					if (!TryParseHexStrict(pBits, buffer[19], buffer[20], ref result._d))
 					{
-						if (!TryParseNotStrictHex(buffer, 19, pBits, ref result._d, ref result._e))
+						if (!TryParseHexNotStrict(buffer, 19, pBits, ref result._d, ref result._e))
 							return false;
 					}
 					else
@@ -191,7 +191,7 @@ namespace FastGuid.Temp
 					// - 23
 					if (!TryParseHexStrict(pBits, buffer[24], buffer[25], ref result._f))
 					{
-						if (!TryParseNotStrictHex(buffer, 24, pBits, ref result._f, ref result._g))
+						if (!TryParseHexNotStrict(buffer, 24, pBits, ref result._f, ref result._g))
 							return false;
 					}
 					else
@@ -208,38 +208,6 @@ namespace FastGuid.Temp
 
 				return true;
 			}
-		}
-
-		private static unsafe bool TryParseNotStrictHex(char* buffer, int startIndex,
-			Bits* charToHexLookup, ref byte currentByte, ref byte nextByte)
-		{
-			// TODO: move to Number in CoreCLR?
-			currentByte = 0;
-			char first = buffer[startIndex];
-			if (first == '+')
-			{
-				if (IsHexPrefix(buffer, startIndex + 1))
-				{
-					if (!TryParseHexStrict(charToHexLookup, '0', buffer[startIndex + 3], ref nextByte))
-						return false;
-				}
-				else
-				{
-					ushort secondChar = buffer[startIndex + 1];
-					if (!TryParseHexStrict(charToHexLookup, '0', secondChar, ref currentByte))
-						return false;
-
-					if (!TryParseHexStrict(charToHexLookup, buffer[startIndex + 2], buffer[startIndex + 3], ref nextByte))
-						return false;
-				}
-
-				return true;
-			}
-
-			if (!IsHexPrefix(buffer, startIndex))
-				return false;
-
-			return TryParseHexStrict(charToHexLookup, buffer[startIndex + 2], buffer[startIndex + 3], ref nextByte);
 		}
 
 		private static unsafe bool IsHexPrefix(char* str, int i) =>
@@ -278,46 +246,36 @@ namespace FastGuid.Temp
 			}
 		}
 
-		/*[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static unsafe bool TryParseHex(Bits* charToHexLookup, int a, int b, ref byte result)
+		private static unsafe bool TryParseHexNotStrict(char* buffer, int startIndex,
+			Bits* charToHexLookup, ref byte currentByte, ref byte nextByte)
 		{
-			const int plusChar = (int)'+';
-			const int maxLowBits = 15;
-			const int maxHighBits = 15 << 4;
-			unchecked
+			// TODO: move to Number in CoreCLR?
+			currentByte = 0;
+			char first = buffer[startIndex];
+			if (first == '+')
 			{
-				// "+", "0x" and "+0x" will not produce false result
-				if (a >= StaticData.BitsFromHexLength)
-					return false;
-
-				if (b >= StaticData.BitsFromHexLength)
+				if (IsHexPrefix(buffer, startIndex + 1))
 				{
-
+					if (!TryParseHexStrict(charToHexLookup, '0', buffer[startIndex + 3], ref nextByte))
+						return false;
 				}
 				else
 				{
-					b = charToHexLookup[b].Low;
+					ushort secondChar = buffer[startIndex + 1];
+					if (!TryParseHexStrict(charToHexLookup, '0', secondChar, ref currentByte))
+						return false;
+
+					if (!TryParseHexStrict(charToHexLookup, buffer[startIndex + 2], buffer[startIndex + 3], ref nextByte))
+						return false;
 				}
 
-				a = charToHexLookup[a].High;
-
-				int value = a + b;
-
-				// for 255 we need to distinguish Bits overflow (from 255 + 0) and normal 255 value (from 240 + 15)
-				if (value >= byte.MaxValue)
-				{
-					if (value == byte.MaxValue && a == maxHighBits && b == maxLowBits)
-					{
-						result = byte.MaxValue;
-						return true;
-					}
-
-					return false;
-				}
-
-				result = (byte)value;
 				return true;
 			}
-		}*/
+
+			if (!IsHexPrefix(buffer, startIndex))
+				return false;
+
+			return TryParseHexStrict(charToHexLookup, buffer[startIndex + 2], buffer[startIndex + 3], ref nextByte);
+		}
 	}
 }
