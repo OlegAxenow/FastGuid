@@ -8,30 +8,59 @@ namespace FastGuid.Tests
 	public class ParsingSpec
 	{
 		[Test]
-		public void TryParseExact_difference_for_not_strict_format()
+		public void TryParseExactD_difference_for_not_strict_format()
 		{
 			// arrange
-			var guidStrings = new []
+			string[] nonStrictPrefixes = { "+", "0x", "0X", "+0x", "+0X" };
+			int[] blockIndexes = { 0, 9, 14, 19, 24 };
+
+			var invalidStrings = new []
 			{
-				"00000000-0x00-0x12-0000-000000000000",
-				"00000000-0x00-0X12-0000-000000000000",
-				"00000000-0x00-+123-0000-000000000000",
+				"00x000000-0000-0000-0000-000000000000",
+				"00+000000-0000-0000-0000-000000000000",
 			};
 
-			foreach (var guidString in guidStrings)
+			foreach (var guidString in invalidStrings)
 			{
 				// act
 				var guidResult = Guid.TryParseExact(guidString, "D", out _);
+
 				var uuidResult = Uuid.TryParseExact(guidString, "D", out _);
+				var simpleGuidResult = SimpleGuid.TryParseExact(guidString, "D", out _);
 
 				// assert
-				Assert.That(guidResult, Is.True);
+				Assert.That(guidResult, Is.False);
 				Assert.That(uuidResult, Is.False);
+				Assert.That(simpleGuidResult, Is.False);
 			}
+
+			TestEnvironment.Iterate((guid, uuid) =>
+			{
+				foreach (var prefix in nonStrictPrefixes)
+				{
+					foreach (var blockIndex in blockIndexes)
+					{
+						var originString = guid.ToString();
+						var guidString = originString.Remove(blockIndex, prefix.Length).Insert(blockIndex, prefix);
+
+						// act
+						var guidResult = Guid.TryParseExact(guidString, "D", out var parsedGuid);
+						var uuidResult = Uuid.TryParseExact(guidString, "D", out _);
+						var simpleGuidResult = SimpleGuid.TryParseExact(guidString, "D", out var simpleGuid);
+
+						// assert
+						Assert.That(guidResult, Is.True);
+						Assert.That(uuidResult, Is.False);
+						Assert.That(simpleGuidResult, Is.True);
+						Assert.That(simpleGuid.ToString(), Is.EqualTo(parsedGuid.ToString()));
+					}
+				}
+
+			});
 		}
 
 		[Test]
-		public void TryParseExact_false_for_0X()
+		public void TryParseExactX_false_for_0()
 		{
 			// arrange
 			var guidStrings = new []
@@ -91,7 +120,7 @@ namespace FastGuid.Tests
 				Assert.That(uuidResult1, Is.EqualTo(guidResult1));
 				Assert.That(simpleGuidResult1, Is.EqualTo(guidResult1));
 
-				AssertWithReplacement(guidString, "D");
+				AssertWithReplacement(guidString, "D", true);
 			});
 
 			var guidResult3 = Guid.TryParseExact(string.Empty, "D", out _);
@@ -229,7 +258,7 @@ namespace FastGuid.Tests
 			Assert.That(uuidResult3, Is.EqualTo(guidResult3));
 		}
 
-		private static void AssertWithReplacement(string guidString, string format)
+		private static void AssertWithReplacement(string guidString, string format, bool checkSimpleGuid = false)
 		{
 			char[] invalidChars = { '!', 'Z', Char.MaxValue };
 
@@ -241,10 +270,14 @@ namespace FastGuid.Tests
 
 					var guidResult2 = Guid.TryParseExact(guidString2, format, out _);
 					var uuidResult2 = Uuid.TryParseExact(guidString2, format, out _);
-					var simpleGuidResult2 = SimpleGuid.TryParseExact(guidString2, format, out _);
 
 					Assert.That(uuidResult2, Is.EqualTo(guidResult2));
-					Assert.That(simpleGuidResult2, Is.EqualTo(guidResult2));
+
+					if (checkSimpleGuid)
+					{
+						var simpleGuidResult2 = SimpleGuid.TryParseExact(guidString2, format, out _);
+						Assert.That(simpleGuidResult2, Is.EqualTo(guidResult2));
+					}
 				}
 			}
 

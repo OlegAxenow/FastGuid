@@ -120,6 +120,7 @@ namespace FastGuid.Temp
 				return false;
 			}
 
+			// 03020100-0504-0706-0809-101112131415 or +0x20100-+504-0X06-+0X9-101112131415
 			fixed (char* buffer = input)
 			{
 				if (buffer[8] != '-' || buffer[13] != '-' || buffer[18] != '-' || buffer[23] != '-')
@@ -129,46 +130,124 @@ namespace FastGuid.Temp
 				{
 					byte* bytes = stackalloc byte[4];
 
-					// TODO: compare performance with BitConverter.ToInt32() and see Guid code
-					// TODO: may be struct can be made or static method depending on BitConverter.IsLittleEndian to speed up converting to int
-					// TODO: implement for chars 0-17 and checking for strange formats in first digit (when false)
-					if (!TryParseHex(pBits, buffer[0], buffer[1], ref bytes[3])) return false;
-					if (!TryParseHex(pBits, buffer[2], buffer[3], ref bytes[2])) return false;
-					if (!TryParseHex(pBits, buffer[4], buffer[5], ref bytes[1])) return false;
-					if (!TryParseHex(pBits, buffer[6], buffer[7], ref bytes[0])) return false;
+					if (!TryParseHexStrict(pBits, buffer[0], buffer[1], ref bytes[3]))
+					{
+						if (!TryParseNotStrictHex(buffer, 0, pBits, ref bytes[3], ref bytes[2]))
+							return false;
+					}
+					else
+					{
+						if (!TryParseHexStrict(pBits, buffer[2], buffer[3], ref bytes[2]))
+							return false;
+					}
 
+					if (!TryParseHexStrict(pBits, buffer[4], buffer[5], ref bytes[1])) return false;
+					if (!TryParseHexStrict(pBits, buffer[6], buffer[7], ref bytes[0])) return false;
+
+					// TODO: may be struct can be made or static method depending on BitConverter.IsLittleEndian to speed up converting to int
 					// TODO: make faster (may be 4 byte variables instead of array?)
 					// TODO: check Unsafe.ReadUnaligned<T> and Unsafe.WriteUnaligned<T> (or MemoryMarshal.As) for real Guid
-
 					result._a = BitConverter.ToInt32(new ReadOnlySpan<byte>(bytes, 4));
 
 					// - 8
-					if (!TryParseHex(pBits, buffer[9], buffer[10], ref bytes[3])) return false;
-					if (!TryParseHex(pBits, buffer[11], buffer[12], ref bytes[2])) return false;
+					if (!TryParseHexStrict(pBits, buffer[9], buffer[10], ref bytes[3]))
+					{
+						if (!TryParseNotStrictHex(buffer, 9, pBits, ref bytes[3], ref bytes[2]))
+							return false;
+					}
+					else
+					{
+						if (!TryParseHexStrict(pBits, buffer[11], buffer[12], ref bytes[2]))
+							return false;
+					}
+
 					// - 13
-					if (!TryParseHex(pBits, buffer[14], buffer[15], ref bytes[1])) return false;
-					if (!TryParseHex(pBits, buffer[16], buffer[17], ref bytes[0])) return false;
+					if (!TryParseHexStrict(pBits, buffer[14], buffer[15], ref bytes[1]))
+					{
+						if (!TryParseNotStrictHex(buffer, 14, pBits, ref bytes[1], ref bytes[0]))
+							return false;
+					}
+					else
+					{
+						if (!TryParseHexStrict(pBits, buffer[16], buffer[17], ref bytes[0]))
+							return false;
+					}
+
 					var span = new ReadOnlySpan<byte>(bytes, 4);
 					result._b = BitConverter.ToInt16(span.Slice(2, 2));
 					result._c = BitConverter.ToInt16(span.Slice(0, 2));
 					// - 18
-					if (!TryParseHex(pBits, buffer[19], buffer[20], ref result._d)) return false;
-					if (!TryParseHex(pBits, buffer[21], buffer[22], ref result._e)) return false;
+					if (!TryParseHexStrict(pBits, buffer[19], buffer[20], ref result._d))
+					{
+						if (!TryParseNotStrictHex(buffer, 19, pBits, ref result._d, ref result._e))
+							return false;
+					}
+					else
+					{
+						if (!TryParseHexStrict(pBits, buffer[21], buffer[22], ref result._e))
+							return false;
+					}
+
 					// - 23
-					if (!TryParseHex(pBits, buffer[24], buffer[25], ref result._f)) return false;
-					if (!TryParseHex(pBits, buffer[26], buffer[27], ref result._g)) return false;
-					if (!TryParseHex(pBits, buffer[28], buffer[29], ref result._h)) return false;
-					if (!TryParseHex(pBits, buffer[30], buffer[31], ref result._i)) return false;
-					if (!TryParseHex(pBits, buffer[32], buffer[33], ref result._j)) return false;
-					if (!TryParseHex(pBits, buffer[34], buffer[35], ref result._k)) return false;
+					if (!TryParseHexStrict(pBits, buffer[24], buffer[25], ref result._f))
+					{
+						if (!TryParseNotStrictHex(buffer, 24, pBits, ref result._f, ref result._g))
+							return false;
+					}
+					else
+					{
+						if (!TryParseHexStrict(pBits, buffer[26], buffer[27], ref result._g))
+							return false;
+					}
+
+					if (!TryParseHexStrict(pBits, buffer[28], buffer[29], ref result._h)) return false;
+					if (!TryParseHexStrict(pBits, buffer[30], buffer[31], ref result._i)) return false;
+					if (!TryParseHexStrict(pBits, buffer[32], buffer[33], ref result._j)) return false;
+					if (!TryParseHexStrict(pBits, buffer[34], buffer[35], ref result._k)) return false;
 				}
 
 				return true;
 			}
 		}
 
+		private static unsafe bool TryParseNotStrictHex(char* buffer, int startIndex,
+			Bits* charToHexLookup, ref byte currentByte, ref byte nextByte)
+		{
+			// TODO: move to Number in CoreCLR?
+			currentByte = 0;
+			char first = buffer[startIndex];
+			if (first == '+')
+			{
+				if (IsHexPrefix(buffer, startIndex + 1))
+				{
+					if (!TryParseHexStrict(charToHexLookup, '0', buffer[startIndex + 3], ref nextByte))
+						return false;
+				}
+				else
+				{
+					ushort secondChar = buffer[startIndex + 1];
+					if (!TryParseHexStrict(charToHexLookup, '0', secondChar, ref currentByte))
+						return false;
+
+					if (!TryParseHexStrict(charToHexLookup, buffer[startIndex + 2], buffer[startIndex + 3], ref nextByte))
+						return false;
+				}
+
+				return true;
+			}
+
+			if (!IsHexPrefix(buffer, startIndex))
+				return false;
+
+			return TryParseHexStrict(charToHexLookup, buffer[startIndex + 2], buffer[startIndex + 3], ref nextByte);
+		}
+
+		private static unsafe bool IsHexPrefix(char* str, int i) =>
+			str[i] == '0' &&
+			(str[i + 1] | 0x20) == 'x';
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static unsafe bool TryParseHex(Bits* pBits, int a, int b, ref byte result)
+		private static unsafe bool TryParseHexStrict(Bits* charToHexLookup, ushort a, ushort b, ref byte result)
 		{
 			const int maxLowBits = 15;
 			const int maxHighBits = 15 << 4;
@@ -177,8 +256,8 @@ namespace FastGuid.Temp
 				if (a >= StaticData.BitsFromHexLength || b >= StaticData.BitsFromHexLength)
 					return false;
 
-				a = pBits[a].High;
-				b = pBits[b].Low;
+				a = charToHexLookup[a].High;
+				b = charToHexLookup[b].Low;
 
 				int value = a + b;
 
@@ -198,5 +277,47 @@ namespace FastGuid.Temp
 				return true;
 			}
 		}
+
+		/*[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static unsafe bool TryParseHex(Bits* charToHexLookup, int a, int b, ref byte result)
+		{
+			const int plusChar = (int)'+';
+			const int maxLowBits = 15;
+			const int maxHighBits = 15 << 4;
+			unchecked
+			{
+				// "+", "0x" and "+0x" will not produce false result
+				if (a >= StaticData.BitsFromHexLength)
+					return false;
+
+				if (b >= StaticData.BitsFromHexLength)
+				{
+
+				}
+				else
+				{
+					b = charToHexLookup[b].Low;
+				}
+
+				a = charToHexLookup[a].High;
+
+				int value = a + b;
+
+				// for 255 we need to distinguish Bits overflow (from 255 + 0) and normal 255 value (from 240 + 15)
+				if (value >= byte.MaxValue)
+				{
+					if (value == byte.MaxValue && a == maxHighBits && b == maxLowBits)
+					{
+						result = byte.MaxValue;
+						return true;
+					}
+
+					return false;
+				}
+
+				result = (byte)value;
+				return true;
+			}
+		}*/
 	}
 }

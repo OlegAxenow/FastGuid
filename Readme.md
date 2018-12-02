@@ -39,6 +39,7 @@ Frequency=3312790 Hz, Resolution=301.8604 ns, Timer=TSC
 Notes:
 
 * "Guid" prefix used for original ```System.Guid``` methods, "Uuid" — for ```FastGuid.Uuid``` methods.
+* ```Equals``` benchmark results too good because of aggressive inlining (can be slower when inlining not available).
 * For ```CompareTo``` and ```Equals``` two benchmarks used for each struct to see the difference between comparing the same and different identifiers.
 * For ```CompareTo``` and ```Equals``` appropriate methods called thrice like ```_guid1.CompareTo(_guid2) ^ _guid2.CompareTo(_guid3) ^ _guid3.CompareTo(_guid1)```.
 * For ```ToString``` last letter means one of the [standard guid formats](https://docs.microsoft.com/en-us/dotnet/api/system.guid.tostring?view=netcore-2.1) — D, B, N or X.
